@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="bootstrap.min.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css" />
+
+    <title>Document</title>
+    <style>
+      #header {
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+        font-size: 400%;
+        padding: 8%;
+        color: white;
+        background-image: url("11-42-05-686_1440x480.jpg");
+      }
+      #img {
+        width: 30px;
+        height: 30px;
+      }
+      #msg {
+        font-size: 18%;
+        color: red;
+        font-family: "Courier New", Courier, monospace;
+        text-align: left;
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 0 4px;
+      }
+      img {
+        width: 290px;
+        height: 210px;
+      }
+
+      /* Create four equal columns that sits next to each other */
+      .column {
+        flex: 25%;
+        max-width: 25%;
+        padding: 0 4px;
+      }
+
+      .column img {
+        margin-top: 8px;
+        vertical-align: middle;
+        width: 100%;
+      }
+
+      /* Responsive layout - makes a two column-layout instead of four columns */
+      @media screen and (max-width: 800px) {
+        .column {
+          flex: 50%;
+          max-width: 50%;
+        }
+      }
+
+      /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+      @media screen and (max-width: 600px) {
+        .column {
+          flex: 100%;
+          max-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body id="body">
+    <div id="root">
+      <header class="jumbotron" id="header">
+        <b>Pixabay Website</b>
+        <br />
+
+        <form id="form" action="">
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              id="search"
+              placeholder="Search images"
+            />
+            <small id="msg" class="form-text " style="color: white"
+              >Popluar images , HD images</small
+            >
+          </div>
+        </form>
+      </header>
+    </div>
+
+    <div class="container">
+      <div class="row"></div>
+      <div class="result"></div>
+    </div>
+
+    <!-- <div class="container">
+      <div class="row">
+        <a
+          href="11-42-05-686_1440x480.jpg"
+          data-toggle="lightbox"
+          data-gallery="example-gallery"
+        >
+          <img src="11-42-05-686_1440x480.jpg" class="img-fluid" />
+        </a>
+      </div>
+    </div> -->
+
+    <script>
+      $(document).ready(function() {
+        $("#form").submit(function(e) {
+          e.preventDefault();
+          const search = $("#search").val();
+          const key = "12960871-115578b1b593ed6c9a6f7fec9";
+          const fullurl =
+            "https://pixabay.com/api/?key=" +
+            key +
+            "&q=" +
+            search +
+            "&per_page=80";
+
+          //link
+
+          $.ajax({
+            method: "GET",
+            url: fullurl,
+            datatype: "JSON"
+          }).done(function(data) {
+            $(".row").empty();
+            $(".result").empty();
+            //
+
+            if (parseInt(data.totalHits) > 0) {
+              data.hits.forEach(function(post) {
+                //$("<a>").attr("href", post.fullHDURL);
+                const a = document.createElement("a");
+
+                a.href = post.largeImageURL;
+                const cl = document.createElement("div");
+                cl.setAttribute("class", "column");
+                $(".row").append(cl);
+                $(cl).append(a);
+                $(a).append("<img src=" + post.previewURL + ">");
+
+                //*******************Link**********************
+
+                //****************************End link ************************
+              });
+            } else {
+              $(".result").append(
+                "<span><b>Sorry, we couldn't find any matches.</b></span><br></br>"
+              );
+              $(".result").append(
+                "<ul>Things you can try:<br></br><li>Check the spelling.</li><li>Use synonyms or generic terms.</li></ul>"
+              );
+            }
+
+            // $.each(data, function(post) {
+            //   console.log(1);
+            //   //   console(post.hits[0]);
+            //   // $("#container").append(
+            //   // "<img src=" +
+            //   //   post.largeImageURL +
+            //   //   ' height="64px" width="64px">'
+            //   //   );
+            // });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
